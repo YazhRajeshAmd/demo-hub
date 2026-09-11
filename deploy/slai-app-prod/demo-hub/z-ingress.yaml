@@ -1,0 +1,28 @@
+# Public URL: https://demo-hub.slai-app.amd.com/
+# Uses the platform-owned wildcard TLS Secret — do not ship per-app TLS ciphertext.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-hub
+  namespace: slai-app-prod
+  labels:
+    app.kubernetes.io/name: demo-hub
+    app.kubernetes.io/instance: demo-hub
+    app.kubernetes.io/managed-by: slai-app-platform
+    hosted-by: slai-app-platform
+spec:
+  rules:
+    - host: demo-hub.slai-app.amd.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: demo-hub
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - demo-hub.slai-app.amd.com
+      secretName: slai-app-wildcard-tls

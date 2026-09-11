@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMD ROCm Demo Hub</title>
+<style>
+  :root {
+    color-scheme: light;
+
+    --bg: #0a0a0c;
+    --bg-raised: #131317;
+    --bg-card: #17171c;
+    --ink: #f3f2ee;
+    --ink-dim: #a3a2a8;
+    --ink-faint: #6d6c73;
+    --line: rgba(243,242,238,0.10);
+    --line-strong: rgba(243,242,238,0.20);
+
+    --amd-red: #ee1c25;
+    --amd-red-dim: rgba(238,28,37,0.35);
+    --fsi: #00c2de;
+    --fsi-dim: rgba(0,194,222,0.35);
+    --health: #b98cff;
+    --health-dim: rgba(185,140,255,0.35);
+
+    --font-display: -apple-system, "Segoe UI Semibold", "Helvetica Neue", Arial, sans-serif;
+    --font-body: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; }
+
+  ::selection { background: var(--amd-red); color: #fff; }
+
+  :focus-visible {
+    outline: 2px solid var(--fsi);
+    outline-offset: 3px;
+  }
+
+  /* ---------------- layout shell ---------------- */
+
+  .shell {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ---------------- topbar ---------------- */
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 26px 32px;
+    max-width: 1180px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .wordmark {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .wordmark .amd {
+    font-size: 15px;
+    letter-spacing: 0.14em;
+    color: var(--ink);
+  }
+
+  .wordmark .amd::after {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--amd-red);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .wordmark .sep {
+    color: var(--ink-faint);
+    font-weight: 400;
+  }
+
+  .wordmark .product {
+    font-size: 15px;
+    color: var(--ink-dim);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .topbar-meta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+
+  /* ---------------- hero ---------------- */
+
+  .hero {
+    position: relative;
+    padding: 64px 0 88px;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: -40px -10% auto -10%;
+    height: 520px;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 42px 42px;
+    -webkit-mask-image: radial-gradient(ellipse 60% 90% at 50% 20%, black 0%, transparent 75%);
+    mask-image: radial-gradient(ellipse 60% 90% at 50% 20%, black 0%, transparent 75%);
+  }
+
+  .node {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: pulse 3.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.15; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.8); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .node { animation: none; opacity: 0.5; }
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fsi);
+    margin: 0 0 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 22px;
+    height: 1px;
+    background: var(--fsi);
+    display: inline-block;
+  }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    font-size: clamp(40px, 6vw, 72px);
+    margin: 0 0 26px;
+    max-width: 16ch;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(100deg, var(--amd-red), #ff6a4d 60%, var(--fsi));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero p.lede {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--ink-dim);
+    max-width: 56ch;
+    margin: 0 0 36px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 36px;
+    flex-wrap: wrap;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    max-width: 640px;
+  }
+
+  .hero-stat .num {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-stat .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-top: 4px;
+  }
+
+  /* ---------------- vertical sections ---------------- */
+
+  .vertical {
+    padding: 0 0 76px;
+  }
+
+  .vertical-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+
+  .vertical-head .name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+
+  .vertical-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .vertical-head .tag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+  }
+
+  @media (max-width: 800px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 24px; }
+  }
+
+  /* ---------------- demo card ---------------- */
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--card-accent, var(--fsi));
+    border-radius: 10px;
+    padding: 26px 26px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .card:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+
+  .card-pitch {
+    font-size: 13.5px;
+    color: var(--ink-dim);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .pill {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 5px 9px;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-dim);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .card-desc {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-dim);
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    padding: 4px 9px;
+    border-radius: 5px;
+  }
+
+  details.runbox {
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+  }
+
+  details.runbox summary {
+    list-style: none;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--ink-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+  }
+
+  details.runbox summary::-webkit-details-marker { display: none; }
+
+  details.runbox summary::before {
+    content: "▸";
+    font-family: var(--font-mono);
+    color: var(--card-accent, var(--fsi));
+    transition: transform 0.15s ease;
+    display: inline-block;
+  }
+
+  details.runbox[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  .runbox pre {
+    margin: 12px 0 0;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 12.2px;
+    line-height: 1.7;
+    color: #d7f7fb;
+  }
+
+  .runbox pre .cmt { color: var(--ink-faint); }
+
+  .runbox .note {
+    margin: 10px 0 0;
+    font-size: 12px;
+    color: var(--ink-faint);
+    line-height: 1.5;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 4px;
+  }
+
+  .btn {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    padding: 9px 14px;
+    border-radius: 7px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .btn:hover { background: var(--bg-raised); border-color: var(--ink-faint); }
+
+  .btn-ghost {
+    color: var(--ink-faint);
+    cursor: not-allowed;
+    border-style: dashed;
+  }
+
+  .btn-ghost:hover { background: transparent; border-color: var(--line-strong); }
+
+  /* ---------------- footer ---------------- */
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 30px 0 56px;
+  }
+
+  footer .note {
+    font-size: 13px;
+    color: var(--ink-faint);
+    line-height: 1.7;
+    max-width: 70ch;
+  }
+
+  footer .note strong { color: var(--ink-dim); font-weight: 600; }
+
+  footer .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.03em;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+</style>
+</head>
+<body>
+
+  <div class="topbar shell" style="padding-left:0; padding-right:0;">
+    <div class="wordmark">
+      <span class="amd">AMD</span>
+      <span class="sep">/</span>
+      <span class="product">ROCm Demo Hub</span>
+    </div>
+    <div class="topbar-meta">Instinct GPU demo library</div>
+  </div>
+
+  <section class="hero shell">
+    <div class="hero-grid-bg" id="grid-bg"></div>
+    <p class="eyebrow">Running on AMD Instinct GPUs</p>
+    <h1>Real workloads,<br><em>real Instinct GPUs.</em></h1>
+    <p class="lede">
+      A growing library of applications built on AMD Instinct GPUs, for
+      partners and internal teams to see, run, and build on. Each demo ships
+      with source, a plain description of what it does, and the exact
+      commands to run it yourself on any Instinct GPU system — organized by
+      industry vertical as the library expands.
+    </p>
+  </section>
+
+  <main class="shell">
+
+    <!-- FINANCIAL SERVICES -->
+    <section class="vertical">
+      <div class="vertical-head">
+        <div class="name">
+          <span class="vertical-dot" style="background:var(--fsi)"></span>
+          Financial Services
+        </div>
+        <div class="tag">Equity research &amp; risk modeling on ROCm</div>
+      </div>
+
+      <div class="card-grid">
+
+        <!-- Card: FSI Stock Intelligence -->
+        <article class="card" style="--card-accent: var(--fsi)">
+          <div class="card-top">
+            <div>
+              <h3 class="card-title">FSI Stock Intelligence</h3>
+              <p class="card-pitch">Technical indicators + LLM commentary for equity research</p>
+            </div>
+          </div>
+          <p class="card-desc">
+            Pulls live pricing from Yahoo Finance, computes SMA, RSI, and
+            momentum, then hands the result to a Phi-4 model served through
+            ROCm vLLM for plain-English analysis — all inside a Gradio UI.
+          </p>
+          <div class="chips">
+            <span class="chip">Python</span>
+            <span class="chip">Gradio</span>
+            <span class="chip">LangChain</span>
+            <span class="chip">vLLM · ROCm</span>
+            <span class="chip">yfinance</span>
+          </div>
+          <details class="runbox">
+            <summary>How to run</summary>
+            <pre><span class="cmt"># clone &amp; install</span>
+git clone https://github.com/YazhRajeshAmd/fsi-stock-analysis
+cd fsi-stock-analysis
+pip install -r requirements.txt
+
+<span class="cmt"># run (needs a reachable vLLM endpoint)</span>
+export VLLM_API_BASE=http://&lt;host&gt;:8000/v1
+python FSI_StockAnalysis_vLLM.py
+<span class="cmt"># open http://localhost:7860</span></pre>
+            <p class="note">Requires a running Phi-4 vLLM endpoint. Point <code>VLLM_API_BASE</code> at any ROCm vLLM server running on an Instinct GPU.</p>
+          </details>
+          <div class="card-actions">
+            <a class="btn" href="https://github.com/YazhRajeshAmd/fsi-stock-analysis" target="_blank" rel="noopener">View source ↗</a>
+            <span class="btn btn-ghost" aria-disabled="true" title="Live link added once the demo is deployed">Launch demo · soon</span>
+          </div>
+        </article>
+
+        <!-- Card: ROCm XGBoost FSI -->
+        <article class="card" style="--card-accent: var(--fsi)">
+          <div class="card-top">
+            <div>
+              <h3 class="card-title">ROCm XGBoost · Stock &amp; Fraud Models</h3>
+              <p class="card-pitch">GPU-trained XGBoost for direction prediction and backtesting</p>
+            </div>
+          </div>
+          <p class="card-desc">
+            Engineers 15+ technical and market-wide features, trains an
+            XGBoost classifier on an AMD Instinct GPU via the ROCm HIP
+            backend, then backtests the resulting signal with equity curves,
+            ROC/AUC, and feature-importance charts — plus a credit-card
+            fraud-detection variant on the same pipeline.
+          </p>
+          <div class="chips">
+            <span class="chip">Python</span>
+            <span class="chip">Gradio</span>
+            <span class="chip">XGBoost · ROCm HIP</span>
+            <span class="chip">scikit-learn</span>
+            <span class="chip">yfinance</span>
+          </div>
+          <details class="runbox">
+            <summary>How to run</summary>
+            <pre><span class="cmt"># clone &amp; install</span>
+git clone https://github.com/YazhRajeshAmd/fsi_rocm_xgboost
+cd fsi_rocm_xgboost
+pip install yfinance pandas numpy scikit-learn matplotlib gradio pillow xgboost
+
+<span class="cmt"># install ROCm-enabled XGBoost for your Instinct GPU, then:</span>
+python rocm_finance_xgboost.py
+<span class="cmt"># open http://localhost:7860</span></pre>
+            <p class="note">Trains with <code>device="gpu"</code> on the ROCm HIP backend — works on any ROCm-supported Instinct GPU.</p>
+          </details>
+          <div class="card-actions">
+            <a class="btn" href="https://github.com/YazhRajeshAmd/fsi_rocm_xgboost" target="_blank" rel="noopener">View source ↗</a>
+            <span class="btn btn-ghost" aria-disabled="true" title="Live link added once the demo is deployed">Launch demo · soon</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- HEALTHCARE -->
+    <section class="vertical">
+      <div class="vertical-head">
+        <div class="name">
+          <span class="vertical-dot" style="background:var(--health)"></span>
+          Healthcare &amp; Life Sciences
+        </div>
+        <div class="tag">Medical imaging AI on ROCm</div>
+      </div>
+
+      <div class="card-grid">
+
+        <!-- Card: MRI Analysis Tool -->
+        <article class="card" style="--card-accent: var(--health)">
+          <div class="card-top">
+            <div>
+              <h3 class="card-title">MRI Analysis Tool</h3>
+              <p class="card-pitch">DICOM/NIfTI analysis with an LLM-drafted radiology report</p>
+            </div>
+          </div>
+          <p class="card-desc">
+            Loads MRI studies in DICOM or NIfTI format, runs denoising,
+            contrast enhancement, and k-means tissue segmentation, then
+            drafts a structured, report-style summary using Llama 3.1 70B
+            served locally through Ollama.
+          </p>
+          <div class="chips">
+            <span class="chip">Python</span>
+            <span class="chip">Gradio</span>
+            <span class="chip">PyTorch</span>
+            <span class="chip">Ollama · Llama 3.1 70B</span>
+            <span class="chip">PyDICOM / NiBabel</span>
+          </div>
+          <details class="runbox">
+            <summary>How to run</summary>
+            <pre><span class="cmt"># clone &amp; install</span>
+git clone https://github.com/YazhRajeshAmd/mri-analysis-tool
+cd mri-analysis-tool
+pip install -r requirements.txt
+
+<span class="cmt"># point at an Ollama server (local or remote)</span>
+export OLLAMA_HOST=http://&lt;host&gt;:11434
+python mri_main.py
+<span class="cmt"># open the Gradio URL printed in the terminal</span></pre>
+            <p class="note">Educational / research use only — not a diagnostic tool. Point <code>OLLAMA_HOST</code> at any Instinct-hosted Ollama server running Llama 3.1 70B.</p>
+          </details>
+          <div class="card-actions">
+            <a class="btn" href="https://github.com/YazhRajeshAmd/mri-analysis-tool" target="_blank" rel="noopener">View source ↗</a>
+            <span class="btn btn-ghost" aria-disabled="true" title="Live link added once the demo is deployed">Launch demo · soon</span>
+          </div>
+        </article>
+
+        <!-- Card: MONAI Pathology -->
+        <article class="card" style="--card-accent: var(--health)">
+          <div class="card-top">
+            <div>
+              <h3 class="card-title">MONAI Pathology Analysis</h3>
+              <p class="card-pitch">Whole-slide tumor detection with DenseNet121 + hipCIM</p>
+            </div>
+          </div>
+          <p class="card-desc">
+            Reads whole-slide pathology images (.svs, .ndpi, .scn) via
+            hipCIM — AMD's ROCm port of cuCIM — and classifies tumor regions
+            with a MONAI DenseNet121 model, served through a FastAPI backend
+            behind an AMD-branded web UI.
+          </p>
+          <div class="chips">
+            <span class="chip">Python</span>
+            <span class="chip">FastAPI</span>
+            <span class="chip">MONAI · DenseNet121</span>
+            <span class="chip">hipCIM · ROCm</span>
+          </div>
+          <details class="runbox">
+            <summary>How to run</summary>
+            <pre><span class="cmt"># clone &amp; install</span>
+git clone https://github.com/YazhRajeshAmd/rocm_monai_pathology
+cd rocm_monai_pathology
+./setup.sh
+
+<span class="cmt"># serve</span>
+uvicorn chatbot_monai_medical:app --host 0.0.0.0 --port 8000 --reload
+<span class="cmt"># open http://localhost:8000</span></pre>
+            <p class="note">hipCIM requires a ROCm-enabled Instinct GPU (MI200/MI300 series or newer).</p>
+          </details>
+          <div class="card-actions">
+            <a class="btn" href="https://github.com/YazhRajeshAmd/rocm_monai_pathology" target="_blank" rel="noopener">View source ↗</a>
+            <span class="btn btn-ghost" aria-disabled="true" title="Live link added once the demo is deployed">Launch demo · soon</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="shell">
+    <p class="note">
+      <strong>About this library:</strong> every demo here runs on AMD
+      Instinct GPUs and is meant to be cloned, run, and extended — by
+      partners evaluating the platform and by AMD teams building the next
+      one. New demos and verticals are added as they're built.
+    </p>
+    <div class="meta-row">
+      <span>AMD · ROCm Demo Hub</span>
+      <span>Updated as new demos ship</span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var container = document.getElementById('grid-bg');
+      if (!container) return;
+      var colors = ['#ee1c25', '#00c2de', '#b98cff'];
+      var count = reduce ? 0 : 14;
+      for (var i = 0; i < count; i++) {
+        var n = document.createElement('div');
+        n.className = 'node';
+        n.style.left = (Math.random() * 100) + '%';
+        n.style.top = (Math.random() * 90) + '%';
+        n.style.background = colors[i % colors.length];
+        n.style.boxShadow = '0 0 8px 1px ' + colors[i % colors.length];
+        n.style.animationDelay = (Math.random() * 3) + 's';
+        container.appendChild(n);
+      }
+    })();
+  </script>
+
+</body>
+</html>

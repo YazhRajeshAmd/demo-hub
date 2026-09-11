@@ -1,0 +1,84 @@
+# Image is stamped automatically by .github/workflows/deploy-prod.yml
+# (yq sets spec.template.spec.containers[0].image to FULL_IMAGE after publish
+# + authorization). No manual edit needed for a normal Deploy prod run.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-hub
+  namespace: slai-app-prod
+  labels:
+    app.kubernetes.io/name: demo-hub
+    app.kubernetes.io/instance: demo-hub
+    app.kubernetes.io/managed-by: slai-app-platform
+    hosted-by: slai-app-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: demo-hub
+      app.kubernetes.io/instance: demo-hub
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: demo-hub
+        app.kubernetes.io/instance: demo-hub
+        hosted-by: slai-app-platform
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: mkmhub.amd.com/hw-slaiapp-dev/demo-hub:REPLACE_WITH_GIT_SHA
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: false
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 250m
+              memory: 512Mi
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 64Mi
+        - name: nginx-cache
+          emptyDir:
+            sizeLimit: 64Mi
+        - name: nginx-run
+          emptyDir:
+            sizeLimit: 16Mi

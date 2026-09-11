@@ -1,0 +1,32 @@
+# Whitelist-only egress: DNS only. This app is a static page with no runtime
+# calls to any downstream service, so no additional egress rule is needed.
+# (No OTLP rule either — nginx serving static content emits no traces/metrics.)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: demo-hub-net
+  namespace: slai-app-prod
+  labels:
+    app.kubernetes.io/name: demo-hub
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: demo-hub
+      app.kubernetes.io/instance: demo-hub
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 8080
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53

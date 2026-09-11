@@ -1,0 +1,9 @@
+*.raw.yaml
+.env
+.oci-build/
+.cache/
+
+# Encrypted YAML is normally ignored, except the handoff ciphertext we
+# intentionally commit so Deploy prod can copy it.
+*.enc.yaml
+!deploy/slai-app-prod/**/secrets.enc.yaml

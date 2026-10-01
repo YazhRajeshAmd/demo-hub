@@ -1,7 +1,9 @@
 *.raw.yaml
+*~
 .env
 .oci-build/
 .cache/
+kubectl.exe
 
 # Encrypted YAML is normally ignored, except the handoff ciphertext we
 # intentionally commit so Deploy prod can copy it.

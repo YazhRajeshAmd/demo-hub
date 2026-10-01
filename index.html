@@ -23,6 +23,10 @@
     --fsi-dim: rgba(0,194,222,0.35);
     --health: #b98cff;
     --health-dim: rgba(185,140,255,0.35);
+    --semi: #ffb020;
+    --semi-dim: rgba(255,176,32,0.35);
+    --devtools: #4ade80;
+    --devtools-dim: rgba(74,222,128,0.35);
 
     --font-display: -apple-system, "Segoe UI Semibold", "Helvetica Neue", Arial, sans-serif;
     --font-body: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
@@ -493,7 +497,7 @@
   <section class="hero shell">
     <div class="hero-grid-bg" id="grid-bg"></div>
     <p class="eyebrow">Running on AMD Instinct GPUs</p>
-    <h1>Real workloads,<br><em>real Instinct GPUs.</em></h1>
+    <h1>Real workloads,<br><em>powered by Instinct.</em></h1>
     <p class="lede">
       A growing library of applications built on AMD Instinct GPUs, for
       partners and internal teams to see, run, and build on. Each demo ships
@@ -501,6 +505,16 @@
       commands to run it yourself on any Instinct GPU system — organized by
       industry vertical as the library expands.
     </p>
+    <p class="lede" style="margin-top:-18px; font-size:15px;">
+      Hosted demo instances are provisioned on request rather than kept
+      permanently live — use the request form below for access to any demo
+      on this page.
+    </p>
+    <div class="card-actions" style="margin-top:4px;">
+      <a class="btn" style="background:var(--fsi); color:#06181b; border-color:var(--fsi); font-weight:700;"
+         href="https://forms.cloud.microsoft/Pages/DesignPageV2.aspx?subpage=design&FormId=H5bYPYjkYE6OEagtmU4YPejCJeiG9NRBh8Ea35aXEOxUODhFTjBETjBDN0FUSkxZSEg4NkhFMEoxNi4u"
+         target="_blank" rel="noopener">Request a demo ↗</a>
+    </div>
   </section>
 
   <main class="shell">
@@ -552,7 +566,7 @@ python FSI_StockAnalysis_vLLM.py
           </details>
           <div class="card-actions">
             <a class="btn" href="https://github.com/YazhRajeshAmd/fsi-stock-analysis" target="_blank" rel="noopener">View source ↗</a>
-            <a class="btn" href="https://demofsi.slai-app.amd.com/" target="_blank" rel="noopener" title="Live once the deploy-prod PR merges">Launch demo ↗</a>
+            <a class="btn" href="https://forms.cloud.microsoft/Pages/DesignPageV2.aspx?subpage=design&FormId=H5bYPYjkYE6OEagtmU4YPejCJeiG9NRBh8Ea35aXEOxUODhFTjBETjBDN0FUSkxZSEg4NkhFMEoxNi4u" target="_blank" rel="noopener" title="Request a provisioned instance of this demo">Request this demo ↗</a>
           </div>
         </article>
 
@@ -592,7 +606,47 @@ python rocm_finance_xgboost.py
           </details>
           <div class="card-actions">
             <a class="btn" href="https://github.com/YazhRajeshAmd/fsi_rocm_xgboost" target="_blank" rel="noopener">View source ↗</a>
-            <a class="btn" href="https://demoxgboost.slai-app.amd.com/" target="_blank" rel="noopener" title="Live once the deploy-prod PR merges">Launch demo ↗</a>
+            <a class="btn" href="https://forms.cloud.microsoft/Pages/DesignPageV2.aspx?subpage=design&FormId=H5bYPYjkYE6OEagtmU4YPejCJeiG9NRBh8Ea35aXEOxUODhFTjBETjBDN0FUSkxZSEg4NkhFMEoxNi4u" target="_blank" rel="noopener" title="Request a provisioned instance of this demo">Request this demo ↗</a>
+          </div>
+        </article>
+
+        <!-- Card: LightGBM ROCm Home Credit -->
+        <article class="card" style="--card-accent: var(--fsi)">
+          <div class="card-top">
+            <div>
+              <h3 class="card-title">LightGBM ROCm · Credit Risk</h3>
+              <p class="card-pitch">GPU-accelerated gradient boosting for loan default prediction</p>
+            </div>
+          </div>
+          <p class="card-desc">
+            Trains a LightGBM binary classifier on the Home Credit default-risk
+            dataset, comparing a ROCm-built GPU histogram backend against CPU
+            training side by side — with AUC, accuracy, and runtime charts
+            rendered in an AMD-branded Gradio UI.
+          </p>
+          <div class="chips">
+            <span class="chip">Python</span>
+            <span class="chip">Gradio</span>
+            <span class="chip">LightGBM · ROCm</span>
+            <span class="chip">scikit-learn</span>
+          </div>
+          <details class="runbox">
+            <summary>How to run</summary>
+            <pre><span class="cmt"># clone</span>
+git clone https://github.com/YazhRajeshAmd/lightgbm_rocm
+cd lightgbm_rocm
+
+<span class="cmt"># build LightGBM with ROCm GPU support, then:</span>
+cmake -DUSE_GPU=1 -DUSE_ROCM=1 -B build -S . -D CMAKE_PREFIX_PATH=/opt/rocm
+make -j &amp;&amp; ./build-python.sh install --gpu
+
+python lightgbm_gpu_homecredit.py   <span class="cmt"># GPU</span>
+python lightgbm_cpu_homecredit.py   <span class="cmt"># CPU comparison</span></pre>
+            <p class="note">Needs LightGBM compiled with <code>USE_ROCM=1</code> against an Instinct GPU, plus the Kaggle Home Credit dataset (<code>application_train.csv</code>).</p>
+          </details>
+          <div class="card-actions">
+            <a class="btn" href="https://github.com/YazhRajeshAmd/lightgbm_rocm" target="_blank" rel="noopener">View source ↗</a>
+            <a class="btn" href="https://forms.cloud.microsoft/Pages/DesignPageV2.aspx?subpage=design&FormId=H5bYPYjkYE6OEagtmU4YPejCJeiG9NRBh8Ea35aXEOxUODhFTjBETjBDN0FUSkxZSEg4NkhFMEoxNi4u" target="_blank" rel="noopener" title="Request a provisioned instance of this demo">Request this demo ↗</a>
           </div>
         </article>
 
@@ -647,7 +701,7 @@ python mri_main.py
           </details>
           <div class="card-actions">
             <a class="btn" href="https://github.com/YazhRajeshAmd/mri-analysis-tool" target="_blank" rel="noopener">View source ↗</a>
-            <a class="btn" href="https://demomri.slai-app.amd.com/" target="_blank" rel="noopener" title="Live once the deploy-prod PR merges">Launch demo ↗</a>
+            <a class="btn" href="https://forms.cloud.microsoft/Pages/DesignPageV2.aspx?subpage=design&FormId=H5bYPYjkYE6OEagtmU4YPejCJeiG9NRBh8Ea35aXEOxUODhFTjBETjBDN0FUSkxZSEg4NkhFMEoxNi4u" target="_blank" rel="noopener" title="Request a provisioned instance of this demo">Request this demo ↗</a>
           </div>
         </article>
 
@@ -685,7 +739,158 @@ uvicorn chatbot_monai_medical:app --host 0.0.0.0 --port 8000 --reload
           </details>
           <div class="card-actions">
             <a class="btn" href="https://github.com/YazhRajeshAmd/rocm_monai_pathology" target="_blank" rel="noopener">View source ↗</a>
-            <a class="btn" href="https://demomonai.slai-app.amd.com/" target="_blank" rel="noopener" title="Live once the deploy-prod PR merges">Launch demo ↗</a>
+            <a class="btn" href="https://forms.cloud.microsoft/Pages/DesignPageV2.aspx?subpage=design&FormId=H5bYPYjkYE6OEagtmU4YPejCJeiG9NRBh8Ea35aXEOxUODhFTjBETjBDN0FUSkxZSEg4NkhFMEoxNi4u" target="_blank" rel="noopener" title="Request a provisioned instance of this demo">Request this demo ↗</a>
+          </div>
+        </article>
+
+        <!-- Card: SE(3) Transformer Drug Discovery -->
+        <article class="card" style="--card-accent: var(--health)">
+          <div class="card-top">
+            <div>
+              <h3 class="card-title">SE(3) Transformer Drug Discovery</h3>
+              <p class="card-pitch">Equivariant transformer for molecular property prediction</p>
+            </div>
+          </div>
+          <p class="card-desc">
+            Predicts molecular properties — HOMO, LUMO, dipole moment, and
+            more — from the QM9 dataset using an SE(3)-equivariant graph
+            transformer, with interactive 3D molecule rendering via RDKit and
+            py3Dmol in a Streamlit UI.
+          </p>
+          <div class="chips">
+            <span class="chip">Python</span>
+            <span class="chip">Streamlit</span>
+            <span class="chip">PyTorch · DGL</span>
+            <span class="chip">RDKit / py3Dmol</span>
+            <span class="chip">QM9</span>
+          </div>
+          <details class="runbox">
+            <summary>How to run</summary>
+            <pre><span class="cmt"># clone &amp; install</span>
+git clone https://github.com/YazhRajeshAmd/rocm_ls_se3
+cd rocm_ls_se3
+python3 -m venv venv &amp;&amp; source venv/bin/activate
+pip install torch==2.1.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm5.6
+pip install numpy pandas matplotlib plotly streamlit rdkit py3dmol dgl
+
+<span class="cmt"># run</span>
+streamlit run ui_drug_discovery.py
+<span class="cmt"># open http://localhost:8501</span></pre>
+            <p class="note">DGL graph ops run fastest with a ROCm-enabled Instinct GPU; falls back to CPU if none is present.</p>
+          </details>
+          <div class="card-actions">
+            <a class="btn" href="https://github.com/YazhRajeshAmd/rocm_ls_se3" target="_blank" rel="noopener">View source ↗</a>
+            <a class="btn" href="https://forms.cloud.microsoft/Pages/DesignPageV2.aspx?subpage=design&FormId=H5bYPYjkYE6OEagtmU4YPejCJeiG9NRBh8Ea35aXEOxUODhFTjBETjBDN0FUSkxZSEg4NkhFMEoxNi4u" target="_blank" rel="noopener" title="Request a provisioned instance of this demo">Request this demo ↗</a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- SEMICONDUCTOR & EDA -->
+    <section class="vertical">
+      <div class="vertical-head">
+        <div class="name">
+          <span class="vertical-dot" style="background:var(--semi)"></span>
+          Semiconductor &amp; EDA
+        </div>
+        <div class="tag">Chip design &amp; timing analysis on ROCm</div>
+      </div>
+
+      <div class="card-grid">
+
+        <!-- Card: EDA Timing Analysis -->
+        <article class="card" style="--card-accent: var(--semi)">
+          <div class="card-top">
+            <div>
+              <h3 class="card-title">EDA Timing Analysis</h3>
+              <p class="card-pitch">Monte Carlo static timing analysis, CPU vs. GPU</p>
+            </div>
+          </div>
+          <p class="card-desc">
+            Runs Monte Carlo simulation over an ISPD-style circuit netlist to
+            estimate critical-path delay under process/voltage/temperature
+            variation — mirroring real static timing analysis (STA) — and
+            compares wall-clock time on CPU against a PyTorch/ROCm GPU
+            backend, live in a Streamlit UI.
+          </p>
+          <div class="chips">
+            <span class="chip">Python</span>
+            <span class="chip">Streamlit</span>
+            <span class="chip">PyTorch · ROCm</span>
+            <span class="chip">Monte Carlo STA</span>
+          </div>
+          <details class="runbox">
+            <summary>How to run</summary>
+            <pre><span class="cmt"># clone &amp; install</span>
+git clone https://github.com/YazhRajeshAmd/eda_demo
+cd eda_demo
+pip install streamlit numpy matplotlib pillow torch
+
+<span class="cmt"># run</span>
+streamlit run app.py
+<span class="cmt"># open http://localhost:8501</span></pre>
+            <p class="note">Toggle "Use GPU (AMD Instinct)" in the sidebar to compare against the CPU path on the same netlist.</p>
+          </details>
+          <div class="card-actions">
+            <a class="btn" href="https://github.com/YazhRajeshAmd/eda_demo" target="_blank" rel="noopener">View source ↗</a>
+            <a class="btn" href="https://forms.cloud.microsoft/Pages/DesignPageV2.aspx?subpage=design&FormId=H5bYPYjkYE6OEagtmU4YPejCJeiG9NRBh8Ea35aXEOxUODhFTjBETjBDN0FUSkxZSEg4NkhFMEoxNi4u" target="_blank" rel="noopener" title="Request a provisioned instance of this demo">Request this demo ↗</a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- AI INFRASTRUCTURE & DEVELOPER TOOLS -->
+    <section class="vertical">
+      <div class="vertical-head">
+        <div class="name">
+          <span class="vertical-dot" style="background:var(--devtools)"></span>
+          AI Infrastructure &amp; Developer Tools
+        </div>
+        <div class="tag">Tooling for teams building on ROCm</div>
+      </div>
+
+      <div class="card-grid">
+
+        <!-- Card: ROCm RAG Assistant -->
+        <article class="card" style="--card-accent: var(--devtools)">
+          <div class="card-top">
+            <div>
+              <h3 class="card-title">ROCm RAG Assistant</h3>
+              <p class="card-pitch">Multi-LLM RAG assistant for ROCm install &amp; troubleshooting</p>
+            </div>
+          </div>
+          <p class="card-desc">
+            Answers ROCm installation and configuration questions by
+            retrieving from a ChromaDB knowledge base built from scraped ROCm
+            docs, then load-balancing the query across four parallel Ollama
+            (Llama 3.1 8B) instances and picking the strongest response — all
+            behind a Gradio chat UI.
+          </p>
+          <div class="chips">
+            <span class="chip">Python</span>
+            <span class="chip">Gradio</span>
+            <span class="chip">LangChain</span>
+            <span class="chip">Ollama · Llama 3.1 8B</span>
+            <span class="chip">ChromaDB</span>
+          </div>
+          <details class="runbox">
+            <summary>How to run</summary>
+            <pre><span class="cmt"># clone &amp; install</span>
+git clone https://github.com/YazhRajeshAmd/rocm-rag-assistant
+cd rocm-rag-assistant
+pip install -r requirements.txt
+
+<span class="cmt"># start the 4 Ollama instances, then run the assistant</span>
+cd gpu1 &amp;&amp; ./start_ollama.sh
+python rocm_assistant_enhanced.py
+<span class="cmt"># open http://localhost:7862</span></pre>
+            <p class="note">Needs 4 Ollama instances serving <code>llama3.1:8b</code> on an Instinct GPU; degrades gracefully if some instances aren't up.</p>
+          </details>
+          <div class="card-actions">
+            <a class="btn" href="https://github.com/YazhRajeshAmd/rocm-rag-assistant" target="_blank" rel="noopener">View source ↗</a>
+            <a class="btn" href="https://forms.cloud.microsoft/Pages/DesignPageV2.aspx?subpage=design&FormId=H5bYPYjkYE6OEagtmU4YPejCJeiG9NRBh8Ea35aXEOxUODhFTjBETjBDN0FUSkxZSEg4NkhFMEoxNi4u" target="_blank" rel="noopener" title="Request a provisioned instance of this demo">Request this demo ↗</a>
           </div>
         </article>
 
@@ -699,7 +904,9 @@ uvicorn chatbot_monai_medical:app --host 0.0.0.0 --port 8000 --reload
       <strong>About this library:</strong> every demo here runs on AMD
       Instinct GPUs and is meant to be cloned, run, and extended — by
       partners evaluating the platform and by AMD teams building the next
-      one. New demos and verticals are added as they're built.
+      one. New demos and verticals are added as they're built. Hosted
+      instances are provisioned per request rather than kept always-on —
+      use the request form to get one spun up for you.
     </p>
     <div class="meta-row">
       <span>AMD · ROCm Demo Hub</span>
@@ -712,7 +919,7 @@ uvicorn chatbot_monai_medical:app --host 0.0.0.0 --port 8000 --reload
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var container = document.getElementById('grid-bg');
       if (!container) return;
-      var colors = ['#ee1c25', '#00c2de', '#b98cff'];
+      var colors = ['#ee1c25', '#00c2de', '#b98cff', '#ffb020', '#4ade80'];
       var count = reduce ? 0 : 14;
       for (var i = 0; i < count; i++) {
         var n = document.createElement('div');

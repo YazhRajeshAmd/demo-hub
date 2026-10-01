@@ -34,7 +34,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: app
-          image: mkmhub.amd.com/hw-slaiapp-dev/demo-hub:REPLACE_WITH_GIT_SHA
+          image: mkmhub.amd.com/hw-slaiapp-dev/demo-hub:e51e73a1110db44e62522ae7a4950f966f2f3f09
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: false
